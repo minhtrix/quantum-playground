@@ -1,0 +1,57 @@
+import { AssetType, defineAssets } from '@iwsdk/core';
+import {
+  createAnalyzerDial,
+  createBeamSplitterTile,
+  createBenchAnchorHandle,
+  createBombRig,
+  createBoxLid,
+  createDetectorProbe,
+  createDoubleSlitRig,
+  createEntanglementRig,
+  createFilterCrystal,
+  createGateCube,
+  createGuideArrow,
+  createMysteryCrate,
+  createOpticalBench,
+  createRoomWaveField,
+  createSchrodingerRig,
+  createSlitShutter,
+  createTetherOrb,
+  createTetherRig,
+} from './scene-assets/quantum-lab.scene-asset.js';
+
+const publicAssetUrl = (filePath: string): string =>
+  `${import.meta.env.BASE_URL}${filePath.replace(/^\/+/u, '')}`;
+
+export default defineAssets({
+  'quantum-bench': createOpticalBench(),
+  'bench-anchor': createBenchAnchorHandle(),
+  'double-slit-rig': createDoubleSlitRig(),
+  'detector-probe': createDetectorProbe(),
+  'entanglement-rig': createEntanglementRig(),
+  'alice-dial': createAnalyzerDial('Alice'),
+  'bob-dial': createAnalyzerDial('Bob'),
+  'slit-shutter': createSlitShutter(),
+  'filter-red': createFilterCrystal(650),
+  'filter-green': createFilterCrystal(532),
+  'filter-blue': createFilterCrystal(430),
+  'bomb-rig': createBombRig(),
+  'crate-alpha': createMysteryCrate('alpha'),
+  'crate-beta': createMysteryCrate('beta'),
+  'bs2-splitter': createBeamSplitterTile(),
+  'tether-rig': createTetherRig(),
+  'tether-left': createTetherOrb('left'),
+  'tether-right': createTetherOrb('right'),
+  'schrodinger-rig': createSchrodingerRig(),
+  'box-lid': createBoxLid(),
+  'gate-h': createGateCube('H'),
+  'gate-x': createGateCube('X'),
+  'gate-z': createGateCube('Z'),
+  'room-wave-field': createRoomWaveField(),
+  'guide-arrow': createGuideArrow(),
+  'lab-panel': {
+    url: publicAssetUrl('ui/lab-panel.uikitml'),
+    type: AssetType.UIKitML,
+    name: 'Quantum Lab Console',
+  },
+});

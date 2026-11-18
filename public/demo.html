@@ -1,0 +1,1164 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quantum Playground — Interaktive Video-Demo & Onboarding-Vorschau</title>
+    <style>
+      :root {
+        --bg: #050914;
+        --panel: rgba(12, 19, 36, 0.92);
+        --border: rgba(56, 189, 248, 0.28);
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --cyan: #38bdf8;
+        --green: #34d399;
+        --amber: #fbbf24;
+        --rose: #fb7185;
+        --violet: #a78bfa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 20% 0%, rgba(14, 165, 233, 0.14), transparent 45%),
+          radial-gradient(circle at 85% 95%, rgba(124, 58, 237, 0.14), transparent 45%),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        padding: 20px;
+      }
+
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .topbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 18px;
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        color: var(--cyan);
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .subtitle {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn {
+        background: rgba(30, 41, 59, 0.95);
+        color: var(--text);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn:hover {
+        border-color: var(--cyan);
+        background: rgba(15, 39, 68, 0.95);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #0284c7, #2563eb);
+        border-color: var(--cyan);
+      }
+
+      .btn-active {
+        background: rgba(16, 185, 129, 0.18);
+        border-color: var(--green);
+        color: #6ee7b7;
+      }
+
+      .chapters {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .chap {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.24);
+        border-radius: 12px;
+        padding: 10px 12px;
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        transition: border-color 0.2s, transform 0.15s;
+      }
+
+      .chap:hover {
+        border-color: var(--cyan);
+        transform: translateY(-1px);
+      }
+
+      .chap.active {
+        background: rgba(2, 132, 199, 0.22);
+        border-color: var(--cyan);
+        box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+      }
+
+      .chap-num {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--cyan);
+      }
+
+      .chap-name {
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .chap-tag {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .stage-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr);
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .cinema-card,
+      .info-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .canvas-wrap {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        background: #040812;
+        border: 1px solid rgba(56, 189, 248, 0.22);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .progress-track {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .step-pill {
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 12px;
+        color: var(--muted);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .step-pill.active {
+        border-color: var(--cyan);
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .step-bar {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        background: var(--cyan);
+        width: 0%;
+      }
+
+      .info-section {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .info-label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--cyan);
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+
+      .goal-text {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.45;
+      }
+
+      .action-list {
+        margin: 0;
+        padding-left: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        font-size: 13px;
+        line-height: 1.45;
+        color: #e2e8f0;
+      }
+
+      .aha-box {
+        border-color: rgba(52, 211, 153, 0.35);
+        background: rgba(6, 78, 59, 0.22);
+      }
+
+      .aha-box .info-label {
+        color: var(--green);
+      }
+
+      .gestures-bar {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 18px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .gesture-item {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .gesture-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--amber);
+      }
+
+      .gesture-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      @media (max-width: 960px) {
+        .chapters {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .stage-grid {
+          grid-template-columns: 1fr;
+        }
+        .gestures-bar {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <span class="eyebrow">Auto-Play Walkthrough | Zuschauen &amp; Verstehen</span>
+          <h1>Was macht man in Quantum Playground 2.0?</h1>
+          <span class="subtitle"
+            >Lehn dich zurück — die Animation zeigt bei allen 5 Stationen automatisch Schritt für Schritt, was du greifst, schießt und beobachtest.</span
+          >
+        </div>
+        <div class="controls">
+          <button id="btn-autoplay" class="btn btn-active" type="button">Pause Auto-Tour</button>
+          <button id="btn-replay" class="btn" type="button">Szene neu starten</button>
+          <a class="btn btn-primary" href="./">Zur echten VR/MR-App &rarr;</a>
+        </div>
+      </div>
+
+      <div id="chapter-tabs" class="chapters">
+        <button class="chap active" data-idx="0" type="button">
+          <span class="chap-num">MODUS 1</span>
+          <span class="chap-name">Bomb Puzzle</span>
+          <span class="chap-tag">Bombe ohne Berühren finden</span>
+        </button>
+        <button class="chap" data-idx="1" type="button">
+          <span class="chap-num">MODUS 2</span>
+          <span class="chap-name">Quantum Tether</span>
+          <span class="chap-tag">Verschränkung im Raum</span>
+        </button>
+        <button class="chap" data-idx="2" type="button">
+          <span class="chap-num">MODUS 3</span>
+          <span class="chap-name">Schrödingers Box</span>
+          <span class="chap-tag">Deckel &amp; H/X/Z Gatter</span>
+        </button>
+        <button class="chap" data-idx="3" type="button">
+          <span class="chap-num">MODUS 4</span>
+          <span class="chap-name">Roomscale-Welle</span>
+          <span class="chap-tag">Im Doppelspalt stehen</span>
+        </button>
+        <button class="chap" data-idx="4" type="button">
+          <span class="chap-num">MODUS 5</span>
+          <span class="chap-name">Bell CHSH Test</span>
+          <span class="chap-tag">Beweis S &gt; 2.00</span>
+        </button>
+      </div>
+
+      <div class="stage-grid">
+        <div class="cinema-card">
+          <div class="canvas-wrap">
+            <canvas id="demo-canvas"></canvas>
+          </div>
+          <div class="progress-track">
+            <div id="pill-0" class="step-pill active">
+              <span id="pill-txt-0">1. Vorbereiten</span>
+              <div id="bar-0" class="step-bar"></div>
+            </div>
+            <div id="pill-1" class="step-pill">
+              <span id="pill-txt-1">2. Interaktion</span>
+              <div id="bar-1" class="step-bar"></div>
+            </div>
+            <div id="pill-2" class="step-pill">
+              <span id="pill-txt-2">3. Quanten-Effekt</span>
+              <div id="bar-2" class="step-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-section">
+            <div class="info-label">Kurz erklärt: Worum geht es hier?</div>
+            <div id="info-goal" class="goal-text"></div>
+          </div>
+
+          <div class="info-section">
+            <div class="info-label">Was du als User genau tust</div>
+            <ol id="info-steps" class="action-list"></ol>
+          </div>
+
+          <div class="info-section aha-box">
+            <div class="info-label">Aha!-Effekt &amp; Spielziel</div>
+            <div id="info-aha" style="font-size: 13px; line-height: 1.5; color: #d1fae5"></div>
+          </div>
+
+          <div class="info-section" style="margin-top: auto">
+            <div class="info-label">Quest-3-Steuerung in dieser Station</div>
+            <div id="info-controls" style="font-size: 12.5px; color: #cbd5e1; line-height: 1.45"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gestures-bar">
+        <div class="gesture-item">
+          <span class="gesture-title">1. Nah greifen (Pinch / Grip)</span>
+          <span class="gesture-desc">Hand direkt ans Objekt (Kiste, Würfel, Orb) bewegen &amp; zupacken oder Stick-Taste halten.</span>
+        </div>
+        <div class="gesture-item">
+          <span class="gesture-title">2. Fern-Strahl (Telekinese)</span>
+          <span class="gesture-desc">Aus der Ferne mit dem Controller-/Hand-Laser zeigen &amp; halten, um Objekte herzuziehen.</span>
+        </div>
+        <div class="gesture-item">
+          <span class="gesture-title">3. Schnell-Klick (Trigger / Tap)</span>
+          <span class="gesture-desc">Jedes Teil reagiert auch auf kurzes Anticken — Kisten rasten direkt ein, Gates schalten sofort.</span>
+        </div>
+        <div class="gesture-item">
+          <span class="gesture-title">4. Linkes Schwebemenü</span>
+          <span class="gesture-desc">Dort wechselst du die 5 Modi per Laser-Klick und siehst deinen Live-Score &amp; Aria-Tipps.</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const MODES = [
+        {
+          id: 'bomb',
+          durationSec: 12,
+          steps: [
+            '1. Kiste Alpha in Test-Slot legen',
+            '2. Einzel-Photonen abfeuern',
+            '3. Dark Port D0 leuchtet = Entschärfen!',
+          ],
+          goal:
+            'Vor dir liegen zwei geheimnisvolle Kisten (Alpha & Beta). Eine enthält harmloses Quarzglas, die andere eine hochempfindliche Photonen-Bombe!',
+          actions: [
+            'Greife Kiste Alpha oder Beta (oder tippe sie an), sodass sie im leuchtenden gelben Test-Sockel des Laser-Vierecks einrastet.',
+            'Drücke „Fire Photon“: Quarzglas schickt 100 % der Photonen in Ausgang D1 (Grün). Die Bombe dagegen explodiert zu 50 %, schickt 25 % nach D1 und verrät sich zu 25 % im eigentlich dunklen Schatten-Detektor D0!',
+            'Sobald D0 (Gold/Gelb) einmal blitzt, ist diese Kiste zu 100 % als Bombe enttarnt — klicke „Defuse Slotted“ für +150 Punkte & Streak!',
+          ],
+          aha:
+            'Elitzur-Vaidman-Paradoxon: Eine echte Bombe blockiert einen der beiden Laserwege, zerstört die Wellen-Auslöschung und lenkt das Photon nach D0 — sie wird enttarnt, ohne von diesem Photon getroffen worden zu sein.',
+          controls:
+            'Greifen oder kurz antippen: Crate Alpha / Crate Beta / BS2-Splitter. Auf dem Panel: „Fire Photon“ & „Defuse Slotted“.',
+        },
+        {
+          id: 'tether',
+          durationSec: 10.5,
+          steps: [
+            '1. Zwei verschränkte Orbs',
+            '2. Quer durch das Zimmer ziehen',
+            '3. Schütteln -> Sofort-Kollaps',
+          ],
+          goal:
+            'Erlebe „spukhafte Fernwirkung“ buchstäblich zwischen deinen beiden Händen — egal wie weit du im Raum auseinandergehst.',
+          actions: [
+            'Greife die linke und rechte Leuchtkugel vom Tisch.',
+            'Bewege deine Arme auseinander oder laufe ein paar Schritte weg (z. B. Wohnzimmer-Tisch bis Sofa): Ein lila Energieband zeigt live den Abstand in Metern.',
+            'Schüttle eine gehaltene Kugel in der Hand (oder drücke „Collapse Pair“): Sofort schießt ein Blitz durchs Band und beide Kugeln springen zeitgleich in denselben Spin (+1 Cyan oder -1 Rose).',
+          ],
+          aha:
+            'Mit „Flip Bell State“ schaltest du zwischen Gleichlauf (|Phi+>: beide gleich) und Gegenteil (|Psi->: eine Cyan, andere immer Rose) um — auch auf 3 Meter Raumdistanz.',
+          controls:
+            'Beide Orbs gleichzeitig mit linken & rechten Händen/Controllern ziehen. Schütteln oder Klicken löst die Messung aus.',
+        },
+        {
+          id: 'schrodinger',
+          durationSec: 11.5,
+          steps: [
+            '1. Geister-Zustand in Box (50/50)',
+            '2. Würfel Z & H auf Dock legen',
+            '3. Deckel heben = Messung!',
+          ],
+          goal:
+            'Programmiere einen echten Qubit-Zustand mit Bauklötzen auf dem Tisch, bevor du in die geheimnisvolle Box schaust.',
+          actions: [
+            'Im Inneren der geschlossenen Glasbox schimmern gleichzeitig Awake |0> (Gold) und Asleep |1> (Indigo).',
+            'Nimm die drei Gate-Würfel H (Superposition), X (Bit-Flip) und Z (Phasen-Flip) und setze sie auf das vordere Magnet-Dock (oder klicke sie an). H -> Z -> H dreht die Wahrscheinlichkeit komplett auf 100 % Asleep!',
+            'Hebe den Deckel nach oben auf oder tippe ihn an („Open & Observe“): Im selben Moment kollabiert die Überlagerung endgültig auf ein Ergebnis.',
+          ],
+          aha:
+            'Man sieht direkt, dass das unsichtbare Z-Gate (Vorzeichenwechsel + nach -) einen messbaren Unterschied macht, sobald ein H-Gate danach Interferenz erzeugt!',
+          controls:
+            'H / X / Z Würfel aufs vordere Dock ziehen oder anklicken; Box-Deckel hochziehen oder anklicken.',
+        },
+        {
+          id: 'slits',
+          durationSec: 11.5,
+          steps: [
+            '1. Welle trifft beide Spalte',
+            '2. Probe dran = Streifen weg!',
+            '3. Roomscale-Welle im Raum',
+          ],
+          goal:
+            'Der Klassiker der Quantenphysik zum Anfassen — mit einem riesigen 3D-Wellenfeld für dein Wohnzimmer.',
+          actions: [
+            'Ohne Beobachtung bildet das Licht klare Interferenz-Streifen am Schirm. Schiebe Farbkristalle vor den Laser oder wirf mit „Throw Photon“ sichtbare Photonenpakete.',
+            'Greife die leuchtende Which-Path-Probe und halte sie an Spalt A: Sobald „gemessen“ wird, durch welchen Spalt das Photon geht, brechen die Streifen sofort zusammen!',
+            'Aktiviere „Roomscale: ON“: Die Welle wächst auf den gesamten Raum um deine Möbel herum — und wird in Mixed Reality hinter echten Sofas & Tischen verdeckt.',
+          ],
+          aha:
+            'Beobachtung verändert das Ergebnis nicht durch grobe Gewalt, sondern weil unterscheidbare Wege nicht mehr miteinander interferieren können.',
+          controls:
+            'Which-Path-Probe, Spalt-Schieber & Farbkristalle greifen/antippen. „Roomscale: ON“ & „Throw Photon“ auf dem Panel.',
+        },
+        {
+          id: 'bell',
+          durationSec: 10.5,
+          steps: [
+            '1. Alice & Bob Räder drehen',
+            '2. 4 Bell-Winkel testen (CHSH)',
+            '3. S > 2.00 Quanten-Beweis',
+          ],
+          goal:
+            'Beweise direkt am Tisch, dass verschränkte Photonen stärker korreliert sind, als es jede klassische Physik erlaubt.',
+          actions: [
+            'In der Mitte erzeugt ein Kristall laufend Photonenpaare, die zu Alice (links) und Bob (rechts) fliegen.',
+            'Drehe die Polarisationsräder per Hand/Laser oder klicke „CHSH Test“, um die 4 berühmten Winkelkombinationen (0/22.5, 0/67.5, 45/22.5, 45/67.5 Grad) abzufahren.',
+            'Sobald alle 4 Zellen gemessen sind, erscheint auf dem großen Screen die Testzahl S.',
+          ],
+          aha:
+            'Jede klassische Theorie mit geheimen Vorab-Werten liegt maximal bei S <= 2.00. Dein Quantenlabor erreicht S ~ 2.83 und bricht damit die Bell-Ungleichung!',
+          controls:
+            'Alice- & Bob-Räder am Tisch greifen & drehen oder auf dem Panel „CHSH Test (0/4 -> 4/4)“ klicken.',
+        },
+      ];
+
+      const canvas = document.getElementById('demo-canvas');
+      const ctx = canvas.getContext('2d');
+      const btnAuto = document.getElementById('btn-autoplay');
+      const btnReplay = document.getElementById('btn-replay');
+      const chapBtns = Array.from(document.querySelectorAll('.chap'));
+
+      const infoGoal = document.getElementById('info-goal');
+      const infoSteps = document.getElementById('info-steps');
+      const infoAha = document.getElementById('info-aha');
+      const infoControls = document.getElementById('info-controls');
+
+      let activeModeIdx = 0;
+      let autoPlay = true;
+      let elapsedInMode = 0;
+      let lastTs = performance.now();
+
+      function syncSidebar() {
+        const m = MODES[activeModeIdx];
+        chapBtns.forEach((b, i) => b.classList.toggle('active', i === activeModeIdx));
+        infoGoal.textContent = m.goal;
+        infoSteps.innerHTML = m.actions.map((a) => `<li>${a}</li>`).join('');
+        infoAha.textContent = m.aha;
+        infoControls.textContent = m.controls;
+        for (let i = 0; i < 3; i += 1) {
+          document.getElementById(`pill-txt-${i}`).textContent = m.steps[i];
+        }
+      }
+
+      function selectMode(idx) {
+        activeModeIdx = idx;
+        elapsedInMode = 0;
+        syncSidebar();
+      }
+
+      chapBtns.forEach((b) => {
+        b.addEventListener('click', () => {
+          selectMode(Number(b.dataset.idx));
+        });
+      });
+
+      btnReplay.addEventListener('click', () => {
+        elapsedInMode = 0;
+      });
+
+      btnAuto.addEventListener('click', () => {
+        autoPlay = !autoPlay;
+        btnAuto.textContent = autoPlay ? 'Pause Auto-Tour' : '▶ Auto-Tour starten';
+        btnAuto.classList.toggle('btn-active', autoPlay);
+      });
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const w = Math.max(480, Math.round(rect.width * dpr));
+        const h = Math.max(300, Math.round(rect.height * dpr));
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+      }
+
+      function clamp01(v) {
+        return Math.max(0, Math.min(1, v));
+      }
+
+      function smooth(v) {
+        const t = clamp01(v);
+        return t * t * (3 - 2 * t);
+      }
+
+      function drawHand(x, y, pinching, label) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.strokeStyle = pinching ? '#fde047' : '#e2e8f0';
+        ctx.fillStyle = pinching ? 'rgba(250, 204, 21, 0.22)' : 'rgba(226, 232, 240, 0.14)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, pinching ? 14 : 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Stylized pinch fingers
+        ctx.beginPath();
+        ctx.moveTo(-8, 12);
+        ctx.lineTo(-4, -8);
+        ctx.moveTo(8, 12);
+        ctx.lineTo(pinching ? 2 : 10, pinching ? -6 : -10);
+        ctx.stroke();
+
+        if (label) {
+          ctx.fillStyle = '#fef08a';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(label, 0, 34);
+        }
+        ctx.restore();
+      }
+
+      function drawCallout(w, text, sub, accent = '#38bdf8') {
+        ctx.save();
+        ctx.fillStyle = 'rgba(8, 15, 30, 0.88)';
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 1.5;
+        const boxW = Math.min(w - 40, 560);
+        const bx = (w - boxW) * 0.5;
+        ctx.beginPath();
+        ctx.roundRect(bx, 14, boxW, 52, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = accent;
+        ctx.font = 'bold 15px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, w * 0.5, 35);
+
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '13px sans-serif';
+        ctx.fillText(sub, w * 0.5, 55);
+        ctx.restore();
+      }
+
+      function drawBench(w, h) {
+        const bx = w * 0.1;
+        const bw = w * 0.8;
+        const by = h * 0.74;
+        const bh = h * 0.14;
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(bx, by, bw, bh, 8);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#22d3ee';
+        ctx.fillRect(bx + 10, by + 4, bw - 20, 4);
+      }
+
+      function renderBombDemo(w, h, p) {
+        drawBench(w, h);
+        // Mach-Zehnder rectangle on bench
+        const lx = w * 0.17, bs1x = w * 0.30, bs2x = w * 0.68, slotX = w * 0.49;
+        const lowY = h * 0.62, topY = h * 0.34;
+
+        // Beam tracks
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(lx, lowY);
+        ctx.lineTo(bs2x, lowY);
+        ctx.lineTo(bs2x, topY);
+        ctx.lineTo(bs1x, topY);
+        ctx.lineTo(bs1x, lowY);
+        ctx.moveTo(bs2x, topY);
+        ctx.lineTo(w * 0.83, topY); // to D1
+        ctx.moveTo(bs2x, topY);
+        ctx.lineTo(bs2x, h * 0.18); // to D0
+        ctx.stroke();
+
+        // Laser gun
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(lx - 42, lowY - 12, 46, 24);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(lx, lowY - 8, 8, 16);
+
+        // Mirrors & BS plates
+        ctx.strokeStyle = '#7dd3fc';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(bs1x - 14, lowY + 14); ctx.lineTo(bs1x + 14, lowY - 14);
+        ctx.moveTo(bs2x - 14, topY + 14); ctx.lineTo(bs2x + 14, topY - 14);
+        ctx.stroke();
+        ctx.strokeStyle = '#d4a656';
+        ctx.beginPath();
+        ctx.moveTo(bs1x - 14, topY + 14); ctx.lineTo(bs1x + 14, topY - 14);
+        ctx.moveTo(bs2x - 14, lowY + 14); ctx.lineTo(bs2x + 14, lowY - 14);
+        ctx.stroke();
+
+        // Slot Ring
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(slotX, topY + 14, 34, 14, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Determine crate positions cleanly over 3 phases:
+        // p < 0.33: Hand picks Alpha & puts in slot + green photon -> Safe D1
+        // 0.33..0.66: Beta swapped in -> First photon BOOM shockwave!
+        // 0.66..1.0: Second photon takes bottom arm -> Dark Port D0 flashes! DEFUSED!
+        let alphaX = w * 0.25, alphaY = h * 0.78;
+        let betaX = w * 0.74, betaY = h * 0.78;
+        let d1Glow = 0.25, d0Glow = 0.25;
+
+        if (p < 0.33) {
+          const t = smooth(p / 0.14);
+          alphaX = alphaX + (slotX - alphaX) * t;
+          alphaY = alphaY + (topY - alphaY) * t;
+          if (p > 0.15) {
+            const fp = (p - 0.15) / 0.17;
+            const px = lx + fp * (w * 0.83 - lx);
+            const py = fp < 0.22 ? lowY : fp < 0.72 ? topY : topY;
+            ctx.fillStyle = '#34d399';
+            ctx.beginPath();
+            ctx.arc(px, fp < 0.22 ? lowY : lowY - smooth((fp - 0.22) / 0.2) * (lowY - topY), 7, 0, Math.PI * 2);
+            ctx.fill();
+            if (fp > 0.7) d1Glow = 1;
+          }
+          drawCallout(
+            w,
+            'Schritt 1: Kiste Alpha (Quarzglas) in Test-Slot legen',
+            'Ohne Bombe kommen 100 % aller Photonen sicher beim grünen Detektor D1 an.',
+            '#34d399'
+          );
+          if (p < 0.16) drawHand(alphaX, alphaY - 16, true, 'Greifen');
+        } else if (p < 0.66) {
+          const sp = (p - 0.33) / 0.33;
+          const moveT = smooth(sp / 0.3);
+          betaX = betaX + (slotX - betaX) * moveT;
+          betaY = betaY + (topY - betaY) * moveT;
+          if (sp > 0.35 && sp < 0.88) {
+            const fp = (sp - 0.35) / 0.35;
+            if (fp < 1) {
+              const px = fp < 0.3 ? lx + (bs1x - lx) * (fp / 0.3) : fp < 0.6 ? bs1x : bs1x + (slotX - bs1x) * ((fp - 0.6) / 0.4);
+              const py = fp < 0.3 ? lowY : fp < 0.6 ? lowY - ((fp - 0.3) / 0.3) * (lowY - topY) : topY;
+              ctx.fillStyle = '#fde047';
+              ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI * 2); ctx.fill();
+            } else {
+              const ex = (sp - 0.7) / 0.22;
+              ctx.strokeStyle = `rgba(251, 113, 133, ${Math.max(0, 1 - ex)})`;
+              ctx.lineWidth = 6;
+              ctx.beginPath();
+              ctx.arc(slotX, topY, 18 + ex * 68, 0, Math.PI * 2);
+              ctx.stroke();
+            }
+          }
+          drawCallout(
+            w,
+            'Schritt 2: Kiste Beta testen -> 50 % BOOM-Gefahr!',
+            'Schlägt das Photon oben ein, explodiert eine echte Photon-Bombe mit Schockwelle.',
+            '#fb7185'
+          );
+          if (sp < 0.32) drawHand(betaX, betaY - 16, true, 'Tauschen');
+        } else {
+          const dp = (p - 0.66) / 0.34;
+          betaX = slotX;
+          betaY = topY;
+          const fp = dp / 0.68;
+          if (fp < 1) {
+            let px, py;
+            if (fp < 0.22) { px = lx + (bs1x - lx) * (fp / 0.22); py = lowY; }
+            else if (fp < 0.6) { px = bs1x + (bs2x - bs1x) * ((fp - 0.22) / 0.38); py = lowY; }
+            else if (fp < 0.82) { px = bs2x; py = lowY - ((fp - 0.6) / 0.22) * (lowY - topY); }
+            else { px = bs2x; py = topY - ((fp - 0.82) / 0.18) * (topY - h * 0.18); }
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI * 2); ctx.fill();
+          } else {
+            d0Glow = 1;
+          }
+          drawCallout(
+            w,
+            'Schritt 3: Dark Port D0 blitzt -> BOMBE BEWIESEN (+150 Pkt)!',
+            'Kein Photon berührte Beta, doch fehlende Interferenz lenkte 25 % nach D0. Jetzt sicher entschärfen!',
+            '#fbbf24'
+          );
+        }
+
+        // Draw Crates
+        const drawCrate = (cx, cy, color, bars, label) => {
+          ctx.fillStyle = '#1e293b';
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.roundRect(cx - 22, cy - 20, 44, 40, 6); ctx.fill(); ctx.stroke();
+          ctx.fillStyle = color;
+          if (bars === 1) ctx.fillRect(cx - 4, cy - 12, 8, 24);
+          else { ctx.fillRect(cx - 10, cy - 12, 6, 24); ctx.fillRect(cx + 4, cy - 12, 6, 24); }
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(label, cx, cy + 33);
+        };
+        drawCrate(alphaX, alphaY, '#38bdf8', 1, 'Alpha');
+        drawCrate(betaX, betaY, '#f59e0b', 2, 'Beta');
+
+        // Detector lamps D1 (Right) & D0 (Top)
+        const drawLamp = (dx, dy, col, glow, lbl) => {
+          ctx.save();
+          if (glow > 0.5) {
+            ctx.shadowColor = col;
+            ctx.shadowBlur = 26;
+          }
+          ctx.fillStyle = col;
+          ctx.beginPath(); ctx.arc(dx, dy, 14, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(lbl, dx, dy + 28);
+        };
+        drawLamp(w * 0.85, topY, d1Glow > 0.5 ? '#34d399' : '#065f46', d1Glow, 'D1 Safe');
+        drawLamp(bs2x, h * 0.18, d0Glow > 0.5 ? '#fde047' : '#78350f', d0Glow, 'D0 Dark');
+      }
+
+      function renderTetherDemo(w, h, p) {
+        drawBench(w, h);
+        const cy = h * 0.50;
+        const spread = p < 0.3 ? 90 : p < 0.65 ? 90 + smooth((p - 0.3) / 0.35) * 195 : 285;
+        const shakeOffset = p >= 0.66 && p < 0.82 ? Math.sin((p - 0.66) * 95) * 12 : 0;
+        const lx = w * 0.5 - spread + shakeOffset;
+        const rx = w * 0.5 + spread;
+        const distM = (0.34 + ((spread - 90) / 195) * 1.4).toFixed(2);
+        const collapsed = p >= 0.78;
+        const orbCol = collapsed ? '#22d3ee' : '#a78bfa';
+
+        // Center EPR hub
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath(); ctx.ellipse(w * 0.5, h * 0.72, 34, 12, 0, 0, Math.PI * 2); ctx.fill();
+
+        // Tether plasma line
+        ctx.save();
+        ctx.strokeStyle = collapsed ? '#22d3ee' : '#a78bfa';
+        ctx.shadowColor = orbCol;
+        ctx.shadowBlur = 16;
+        ctx.lineWidth = collapsed ? 7 : 5;
+        ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(rx, cy); ctx.stroke();
+        ctx.restore();
+
+        // Flying pulse wave at collapse
+        if (p >= 0.76 && p < 0.90) {
+          const pt = (p - 0.76) / 0.14;
+          const px = lx + (rx - lx) * pt;
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath(); ctx.arc(px, cy, 10, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // Left & Right Orbs
+        const drawOrb = (ox, oy, label, spinTxt) => {
+          ctx.save();
+          ctx.strokeStyle = '#d4a656';
+          ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.ellipse(ox, oy, 32, 18, 0.4, 0, Math.PI * 2); ctx.stroke();
+          ctx.fillStyle = collapsed ? '#22d3ee' : '#38bdf8';
+          ctx.shadowColor = orbCol;
+          ctx.shadowBlur = collapsed ? 28 : 12;
+          ctx.beginPath(); ctx.arc(ox, oy, 22, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(spinTxt, ox, oy + 4);
+          ctx.fillStyle = '#cbd5e1';
+          ctx.font = '12px sans-serif';
+          ctx.fillText(label, ox, oy + 44);
+        };
+
+        drawOrb(lx, cy, 'Left Orb', collapsed ? '+1' : '?');
+        drawOrb(rx, cy, 'Right Orb', collapsed ? '+1' : '?');
+
+        // Distance label
+        ctx.fillStyle = '#e0f2fe';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Abstand: ${distM} m`, w * 0.5, cy - 16);
+
+        if (p < 0.30) {
+          drawCallout(w, 'Schritt 1: Zwei verschränkte Orbs schweben vor dir', 'Ihr Spin ist noch unbestimmt (?). Beide Hände können sie greifen.', '#a78bfa');
+        } else if (p < 0.66) {
+          drawHand(lx, cy + 28, true, 'Ziehen');
+          drawHand(rx, cy + 28, true, 'Ziehen');
+          drawCallout(w, 'Schritt 2: Auseinanderziehen quer durch dein Zimmer', 'Das Quantenband spannt sich live zwischen Couchtisch und Esstisch.', '#38bdf8');
+        } else {
+          drawHand(lx, cy + 28, true, p < 0.82 ? 'Schütteln!' : 'Kollaps!');
+          drawCallout(w, 'Schritt 3: Schütteln -> Augengleiche Sofort-Korrelation!', 'Beide Orbs flippen synchron in Cyan (+1/+1) — ganz ohne Signalverzögerung.', '#22d3ee');
+        }
+      }
+
+      function renderSchrodingerDemo(w, h, p) {
+        drawBench(w, h);
+        const bx = w * 0.5, by = h * 0.52;
+
+        // Chamber frame
+        ctx.fillStyle = 'rgba(125, 211, 252, 0.14)';
+        ctx.strokeStyle = '#d4a656';
+        ctx.lineWidth = 3;
+        ctx.fillRect(bx - 90, by - 58, 180, 116);
+        ctx.strokeRect(bx - 90, by - 58, 180, 116);
+
+        // Lid position (opens on p > 0.68)
+        const openLift = p > 0.72 ? smooth((p - 0.72) / 0.16) * 58 : 0;
+        const lidRot = p > 0.72 ? smooth((p - 0.72) / 0.16) * -0.25 : 0;
+        ctx.save();
+        ctx.translate(bx, by - 64 - openLift);
+        ctx.rotate(lidRot);
+        ctx.fillStyle = '#1e293b';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.fillRect(-96, -8, 192, 16);
+        ctx.strokeRect(-96, -8, 192, 16);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(-26, -16, 52, 8);
+        ctx.restore();
+
+        // Dock ring
+        const dockX = bx, dockY = h * 0.76;
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.ellipse(dockX, dockY, 34, 12, 0, 0, Math.PI * 2); ctx.stroke();
+
+        // Probabilities across phases: 0..0.33 => 50/50; 0.33..0.68 => Z then H => 0% Gold / 100% Violet; >0.74 => collapsed Violet!
+        const probAsleep = p < 0.35 ? 0.5 : smooth((p - 0.35) / 0.25) * 0.5 + 0.5;
+        const probAwake = 1 - probAsleep;
+        const opened = p >= 0.78;
+
+        // Draw Ghost Orbs inside chamber
+        if (!opened && probAwake > 0.05) {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0.15, probAwake);
+          ctx.fillStyle = '#fde047';
+          ctx.beginPath(); ctx.arc(bx - 36, by, 22 * (0.6 + probAwake * 0.6), 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#1e293b'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText('Awake |0>', bx - 36, by + 34);
+          ctx.restore();
+        }
+        if (probAsleep > 0.05) {
+          ctx.save();
+          ctx.globalAlpha = opened ? 1 : Math.max(0.2, probAsleep);
+          ctx.fillStyle = '#a78bfa';
+          ctx.shadowColor = '#7c3aed';
+          ctx.shadowBlur = opened ? 30 : 10;
+          ctx.beginPath(); ctx.arc(bx + 34, by, 24 * (0.6 + probAsleep * 0.6), 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#e0e7ff'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText(opened ? 'KOLLAPS: Asleep |1>!' : 'Asleep |1>', bx + 34, by + 36);
+          ctx.restore();
+        }
+
+        // Gate Cubes (H, X, Z)
+        const drawGate = (gx, gy, col, letter) => {
+          ctx.fillStyle = '#0f172a';
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.roundRect(gx - 20, gy - 20, 40, 40, 6); ctx.fill(); ctx.stroke();
+          ctx.fillStyle = col;
+          ctx.font = 'bold 20px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(letter, gx, gy + 7);
+        };
+        let hx = w * 0.24, hy = h * 0.74;
+        let zx = w * 0.76, zy = h * 0.74;
+        if (p >= 0.30 && p < 0.50) {
+          const mt = smooth((p - 0.30) / 0.14);
+          zx = zx + (dockX - zx) * mt;
+          zy = zy + (dockY - 12 - zy) * mt;
+          drawHand(zx, zy - 14, true, 'Z-Gate');
+        } else if (p >= 0.50 && p < 0.68) {
+          const mt = smooth((p - 0.50) / 0.14);
+          hx = hx + (dockX - hx) * mt;
+          hy = hy + (dockY - 12 - hy) * mt;
+          drawHand(hx, hy - 14, true, 'H-Gate');
+        } else if (p >= 0.68 && p < 0.85) {
+          drawHand(bx, by - 72 - openLift, true, 'Deckel heben!');
+        }
+        drawGate(hx, hy, '#38bdf8', 'H');
+        drawGate(w * 0.67, h * 0.74, '#fb7185', 'X');
+        drawGate(zx, zy, '#34d399', 'Z');
+
+        if (p < 0.30) {
+          drawCallout(w, 'Schritt 1: Superposition 50 % Awake | 50 % Asleep', 'Vor dem Öffnen existieren beide Möglichkeiten gleichzeitig als Geister.', '#fde047');
+        } else if (p < 0.68) {
+          drawCallout(w, 'Schritt 2: Z- und H-Würfel aufs Magnet-Dock setzen', 'Der Schaltkreis H -> Z -> H dreht die Welle auf 100 % Asleep |1>!', '#38bdf8');
+        } else {
+          drawCallout(w, 'Schritt 3: Deckel anheben -> Zustands-Kollaps!', 'Jetzt wird gemessen — genau Asleep |1> bleibt sichtbar übrig.', '#a78bfa');
+        }
+      }
+
+      function renderDoubleSlitDemo(w, h, p) {
+        drawBench(w, h);
+        const laserX = w * 0.18, slitX = w * 0.42, screenX = w * 0.76, beamY = h * 0.48;
+
+        // Roomscale wave rings bottom when p > 0.65
+        if (p >= 0.65) {
+          const fade = smooth((p - 0.65) / 0.12);
+          ctx.save();
+          ctx.strokeStyle = `rgba(46, 242, 153, ${0.42 * fade})`;
+          ctx.lineWidth = 2;
+          for (let r = 0; r < 9; r += 1) {
+            const rad = ((p * 260 + r * 36) % 320);
+            ctx.beginPath();
+            ctx.ellipse(w * 0.5, h * 0.86, rad * 1.4, rad * 0.34, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        // Laser & Slits & Screen
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(laserX - 42, beamY - 12, 46, 24);
+        ctx.strokeStyle = '#2ef299';
+        ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(laserX, beamY); ctx.lineTo(slitX, beamY); ctx.stroke();
+
+        // Double slit wall
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(slitX - 5, beamY - 68, 10, 42);
+        ctx.fillRect(slitX - 5, beamY - 10, 10, 20);
+        ctx.fillRect(slitX - 5, beamY + 26, 10, 42);
+
+        // Screen fringes vs collapsed
+        const probeActive = p >= 0.35 && p < 0.65;
+        ctx.fillStyle = '#0b1220';
+        ctx.strokeStyle = '#d4a656';
+        ctx.lineWidth = 3;
+        ctx.fillRect(screenX - 8, beamY - 76, 16, 152);
+        ctx.strokeRect(screenX - 8, beamY - 76, 16, 152);
+
+        for (let k = -5; k <= 5; k += 1) {
+          const bright = probeActive ? Math.exp(-k * k * 0.25) : Math.cos(k * 1.25) ** 2;
+          ctx.fillStyle = `rgba(46, 242, 153, ${0.15 + bright * 0.85})`;
+          ctx.fillRect(screenX - 5, beamY + k * 12 - 4, 10, 8);
+        }
+
+        // Throw photon animated orb on phase 1
+        if (p < 0.35) {
+          const pt = (p * 3) % 1;
+          ctx.fillStyle = '#2ef299';
+          ctx.beginPath(); ctx.arc(laserX + pt * (screenX - laserX), beamY - Math.sin(pt * Math.PI) * 28, 7, 0, Math.PI * 2); ctx.fill();
+          drawCallout(w, 'Schritt 1: Welle interferiert & Photonen werfen', 'Mit „Throw Photon“ fliegen Lichtpakete durch beide Spalte aufs Zielmuster.', '#2ef299');
+        } else if (probeActive) {
+          const mt = smooth((p - 0.35) / 0.14);
+          const px = w * 0.28 + (slitX - 18 - w * 0.28) * mt;
+          const py = h * 0.72 + (beamY - 18 - h * 0.72) * mt;
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath(); ctx.arc(px, py, 14, 0, Math.PI * 2); ctx.fill();
+          drawHand(px, py + 14, true, 'Spion-Probe');
+          drawCallout(w, 'Schritt 2: Which-Path-Probe an Spalt A -> Streifen weg!', 'Sobald gemessen wird, welchen Spalt das Photon nimmt, bricht die Welle ein.', '#fbbf24');
+        } else {
+          drawCallout(w, 'Schritt 3: „Roomscale: ON“ — stehe mitten in der Welle!', 'Die Interferenzwellen legen sich riesig über deinen Zimmerboden (mit Möbel-Verdeckung).', '#38bdf8');
+        }
+      }
+
+      function renderBellDemo(w, h, p) {
+        drawBench(w, h);
+        const cx = w * 0.5, cy = h * 0.56;
+        const ax = w * 0.25, bx = w * 0.75;
+
+        // Central EPR crystal & flying pair pulses
+        ctx.fillStyle = '#a78bfa';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - 26); ctx.lineTo(cx + 22, cy); ctx.lineTo(cx, cy + 26); ctx.lineTo(cx - 22, cy);
+        ctx.closePath(); ctx.fill();
+
+        const fly = (p * 3.5) % 1;
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(cx - fly * (cx - ax), cy, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + fly * (bx - cx), cy, 6, 0, Math.PI * 2); ctx.fill();
+
+        // Alice & Bob rotating polarizer dials
+        const bobDeg = p < 0.33 ? 22.5 : p < 0.66 ? 67.5 : 45;
+        const drawDial = (dx, deg, title) => {
+          ctx.save();
+          ctx.translate(dx, cy);
+          ctx.strokeStyle = '#d4a656';
+          ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.arc(0, 0, 32, 0, Math.PI * 2); ctx.stroke();
+          ctx.rotate((deg * Math.PI) / 180);
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(-4, -26, 8, 52);
+          ctx.restore();
+          ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText(`${title}: ${deg} deg`, dx, cy + 50);
+        };
+        drawDial(ax, p > 0.5 ? 45 : 0, 'Alice');
+        drawDial(bx, bobDeg, 'Bob');
+
+        // Screen CHSH readout
+        const cells = p < 0.25 ? 1 : p < 0.5 ? 2 : p < 0.75 ? 3 : 4;
+        ctx.fillStyle = '#071022';
+        ctx.strokeStyle = cells === 4 ? '#34d399' : '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.fillRect(cx - 108, h * 0.22, 216, 70);
+        ctx.strokeRect(cx - 108, h * 0.22, 216, 70);
+
+        ctx.fillStyle = cells === 4 ? '#4ade80' : '#38bdf8';
+        ctx.font = 'bold 17px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(cells === 4 ? 'CHSH S = 2.84 > 2.00!' : `CHSH Test: ${cells} / 4 Winkel`, cx, h * 0.22 + 32);
+        ctx.fillStyle = '#cbd5e1'; ctx.font = '12px sans-serif';
+        ctx.fillText('Klassisches Maximum: S <= 2.00', cx, h * 0.22 + 54);
+
+        if (p < 0.40) {
+          drawCallout(w, 'Schritt 1: Polarisationsräder (Alice & Bob) drehen', 'Einzelmessungen wirken zufällig, doch gleiche Winkel stimmen exakt überein.', '#38bdf8');
+        } else if (p < 0.75) {
+          drawCallout(w, 'Schritt 2: 4 Test-Winkelpaare per „CHSH Test“ messen', 'Jeder Klick sammelt echte Quantenstatistik bei 0/22.5, 0/67.5, 45/22.5, 45/67.5.', '#a78bfa');
+        } else {
+          drawCallout(w, 'Schritt 3: S = 2.84 -> Quantenverschränkung bewiesen!', 'Kein klassischer Trick schafft über 2.00 — Quest abgeschlossen!', '#34d399');
+        }
+      }
+
+      function tick(now) {
+        const dt = Math.min(0.05, (now - lastTs) / 1000);
+        lastTs = now;
+
+        const m = MODES[activeModeIdx];
+        if (autoPlay) {
+          elapsedInMode += dt;
+          if (elapsedInMode >= m.durationSec) {
+            selectMode((activeModeIdx + 1) % MODES.length);
+          }
+        }
+
+        const p = clamp01(elapsedInMode / MODES[activeModeIdx].durationSec);
+        const stepIdx = p < 0.333 ? 0 : p < 0.666 ? 1 : 2;
+        for (let i = 0; i < 3; i += 1) {
+          document.getElementById(`pill-${i}`).classList.toggle('active', i === stepIdx);
+          const localP = i < stepIdx ? 1 : i > stepIdx ? 0 : (p - i / 3) * 3;
+          document.getElementById(`bar-${i}`).style.width = `${Math.round(clamp01(localP) * 100)}%`;
+        }
+
+        resizeCanvas();
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.fillStyle = '#040812';
+        ctx.fillRect(0, 0, w, h);
+
+        if (m.id === 'bomb') renderBombDemo(w, h, p);
+        else if (m.id === 'tether') renderTetherDemo(w, h, p);
+        else if (m.id === 'schrodinger') renderSchrodingerDemo(w, h, p);
+        else if (m.id === 'slits') renderDoubleSlitDemo(w, h, p);
+        else renderBellDemo(w, h, p);
+
+        requestAnimationFrame(tick);
+      }
+
+      syncSidebar();
+      requestAnimationFrame(tick);
+    </script>
+  </body>
+</html>

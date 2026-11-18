@@ -1,0 +1,188 @@
+<style>
+  .lab-root {
+    flex-direction: column;
+    width: 436px;
+    min-height: 332px;
+    justify-content: flex-start;
+    padding: 14px;
+    gap: 8px;
+  }
+
+  .header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .eyebrow {
+    color: #0369a1;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .eyebrow:dark {
+    color: #38bdf8;
+  }
+
+  .title {
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .title:dark {
+    color: #f8fafc;
+  }
+
+  .tab-row {
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  .tab-btn {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0px;
+    height: 30px;
+    padding-left: 4px;
+    padding-right: 4px;
+    justify-content: center;
+  }
+
+  .tab-label {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .cta-card {
+    flex-direction: column;
+    gap: 3px;
+    padding: 11px;
+    border-radius: 12px;
+    border-width: 1px;
+    border-color: #f59e0b;
+    background-color: #0b1628;
+  }
+
+  .cta-tag {
+    color: #fde047;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+  }
+
+  .cta-copy {
+    color: #f8fafc;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18px;
+  }
+
+  .mission-button {
+    min-height: 42px;
+    justify-content: center;
+  }
+
+  .mission-primary {
+    flex-grow: 1;
+  }
+
+  .mission-label {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .btn-row {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .btn-half {
+    flex-grow: 1;
+    justify-content: flex-start;
+  }
+
+  .btn-full {
+    justify-content: flex-start;
+  }
+
+  .label-shift {
+    transform-translate-y: 1px;
+  }
+</style>
+<Panel class="lab-root">
+  <div class="header">
+    <div style="flex-direction: column; gap: 2px;">
+      <span id="panel-score-badge" class="eyebrow">TRAINING</span>
+      <span id="panel-mode-title" class="title">Quantum Bomb Test</span>
+    </div>
+    <Atom style="width: 22px; height: 22px; color: #0284c7;"></Atom>
+  </div>
+
+  <div class="tab-row">
+    <Button id="tab-bomb" class="tab-btn">
+      <ButtonLabel id="lbl-tab-bomb" class="tab-label">*Bomb</ButtonLabel>
+    </Button>
+    <Button id="tab-tether" class="tab-btn">
+      <ButtonLabel id="lbl-tab-tether" class="tab-label">Tether</ButtonLabel>
+    </Button>
+    <Button id="tab-box" class="tab-btn">
+      <ButtonLabel id="lbl-tab-box" class="tab-label">Box</ButtonLabel>
+    </Button>
+    <Button id="tab-slits" class="tab-btn">
+      <ButtonLabel id="lbl-tab-slits" class="tab-label">Slits</ButtonLabel>
+    </Button>
+    <Button id="tab-bell" class="tab-btn">
+      <ButtonLabel id="lbl-tab-bell" class="tab-label">Bell</ButtonLabel>
+    </Button>
+  </div>
+
+  <div id="mission-result" class="cta-card">
+    <span id="panel-cta-tag" class="cta-tag">1 / 3 - REFERENCE</span>
+    <span id="panel-cta-text" class="cta-copy">Find a hidden bomb. Test the empty rig first.</span>
+  </div>
+
+  <div id="mission-actions" class="btn-row">
+    <Button id="bomb-primary" class="mission-button mission-primary">
+      <ButtonLabel id="lbl-bomb-primary" class="mission-label">Check empty track</ButtonLabel>
+    </Button>
+    <Button id="bomb-alternate" class="mission-button" style="display: none">
+      <ButtonLabel id="lbl-bomb-alternate">Load crate B</ButtonLabel>
+    </Button>
+    <Button id="bomb-quarantine" class="mission-button" style="display: none">
+      <ButtonLabel id="lbl-bomb-quarantine">Quarantine</ButtonLabel>
+    </Button>
+  </div>
+
+  <div id="experiment-actions-top" class="btn-row" style="display: none">
+    <Button id="btn-act-1" class="btn-half">
+      <ButtonIcon><Compass></Compass></ButtonIcon>
+      <ButtonLabel id="lbl-act-1" class="label-shift">Swap Crate</ButtonLabel>
+    </Button>
+    <Button id="btn-act-2" class="btn-half">
+      <ButtonIcon><Zap></Zap></ButtonIcon>
+      <ButtonLabel id="lbl-act-2" class="label-shift">Fire Photon</ButtonLabel>
+    </Button>
+  </div>
+
+  <div id="experiment-actions-bottom" class="btn-row" style="display: none">
+    <Button id="btn-act-3" class="btn-half">
+      <ButtonIcon><Eye></Eye></ButtonIcon>
+      <ButtonLabel id="lbl-act-3" class="label-shift">Defuse</ButtonLabel>
+    </Button>
+    <Button id="btn-reset-lab" class="btn-half">
+      <ButtonIcon><RotateCcw></RotateCcw></ButtonIcon>
+      <ButtonLabel id="lbl-reset-lab" class="label-shift">Next Round</ButtonLabel>
+    </Button>
+  </div>
+
+  <Button id="btn-xr" class="btn-full">
+    <ButtonIcon><RectangleGoggles></RectangleGoggles></ButtonIcon>
+    <ButtonLabel class="label-shift">Enter Mixed Reality</ButtonLabel>
+  </Button>
+  <Button id="btn-exit-xr" class="btn-full" style="display: none">
+    <ButtonIcon><LogIn></LogIn></ButtonIcon>
+    <ButtonLabel class="label-shift">Exit to Browser</ButtonLabel>
+  </Button>
+</Panel>

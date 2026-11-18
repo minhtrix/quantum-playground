@@ -1,0 +1,629 @@
+{
+  "version": "iwsdk.scene.v1",
+  "units": "meters",
+  "components": {
+    "com.iwsdk.components.IBLGradient": {
+      "sky": [0.55, 0.68, 0.88, 1],
+      "equator": [0.22, 0.28, 0.4, 1],
+      "ground": [0.08, 0.11, 0.18, 1],
+      "intensity": 0.48
+    }
+  },
+  "environment": {
+    "toneMapping": "aces",
+    "exposure": 1,
+    "shadows": true,
+    "shadowMapType": "pcf"
+  },
+  "resources": {},
+  "authoring": {
+    "views": [
+      {
+        "id": "hero",
+        "role": "hero",
+        "projection": "perspective",
+        "position": [0, 1.44, 0.56],
+        "target": [0, 0.98, -0.58],
+        "fov": 62
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "shadow-catcher",
+      "name": "Shadow Catcher",
+      "framingRole": "support",
+      "transform": {
+        "position": [0, 0.001, -0.54]
+      },
+      "components": {
+        "ShadowCatcher": {
+          "size": [4, 4],
+          "opacity": 0.28
+        }
+      }
+    },
+    {
+      "id": "quantum-bench",
+      "name": "Quantum Optical Bench",
+      "content": {
+        "type": "asset",
+        "asset": "quantum-bench",
+        "castShadow": true,
+        "receiveShadow": true
+      },
+      "transform": {
+        "position": [0, 0.88, -0.54]
+      },
+      "components": {
+        "QuantumBenchMarker": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "bench-anchor",
+      "name": "Bench Reposition Handle",
+      "metadata": {
+        "iwsdk.validation": {
+          "allowFloating": true
+        }
+      },
+      "content": {
+        "type": "asset",
+        "asset": "bench-anchor",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0, 0.88, -0.275]
+      },
+      "components": {
+        "BenchAnchorMarker": {},
+        "RayInteractable": {},
+        "OneHandGrabbable": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "bomb-rig",
+      "name": "Quantum Bomb Interferometer",
+      "content": {
+        "type": "asset",
+        "asset": "bomb-rig",
+        "castShadow": true,
+        "receiveShadow": true
+      },
+      "transform": {
+        "position": [0, 0.88, -0.54]
+      },
+      "components": {
+        "BombRigMarker": {},
+        "RayInteractable": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "crate-alpha",
+      "name": "Mystery Crate Alpha",
+      "content": {
+        "type": "asset",
+        "asset": "crate-alpha",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.24, 0.88, -0.36]
+      },
+      "components": {
+        "BombCrateMarker": {
+          "crateId": "alpha"
+        },
+        "RayInteractable": {},
+        "OneHandGrabbable": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "crate-beta",
+      "name": "Mystery Crate Beta",
+      "content": {
+        "type": "asset",
+        "asset": "crate-beta",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0.24, 0.88, -0.36]
+      },
+      "components": {
+        "BombCrateMarker": {
+          "crateId": "beta"
+        },
+        "RayInteractable": {},
+        "OneHandGrabbable": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "bs2-splitter",
+      "name": "BS2 Beam Splitter",
+      "content": {
+        "type": "asset",
+        "asset": "bs2-splitter",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0.21, 0.88, -0.65]
+      },
+      "components": {
+        "BombBs2Marker": {},
+        "RayInteractable": {},
+        "OneHandGrabbable": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "tether-rig",
+      "name": "Quantum Tether Base",
+      "content": {
+        "type": "asset",
+        "asset": "tether-rig",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0, 0.88, -0.54]
+      },
+      "components": {
+        "TetherRigMarker": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "tether-left",
+      "name": "Entangled Orb Left",
+      "metadata": {
+        "iwsdk.validation": {
+          "allowFloating": true
+        }
+      },
+      "content": {
+        "type": "asset",
+        "asset": "tether-left",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.18, 0.99, -0.48]
+      },
+      "components": {
+        "TetherOrbMarker": {
+          "side": "left"
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveTowardsTarget"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "tether-right",
+      "name": "Entangled Orb Right",
+      "metadata": {
+        "iwsdk.validation": {
+          "allowFloating": true
+        }
+      },
+      "content": {
+        "type": "asset",
+        "asset": "tether-right",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0.18, 0.99, -0.48]
+      },
+      "components": {
+        "TetherOrbMarker": {
+          "side": "right"
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveTowardsTarget"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "schrodinger-rig",
+      "name": "Schrodinger Chamber",
+      "content": {
+        "type": "asset",
+        "asset": "schrodinger-rig",
+        "castShadow": true,
+        "receiveShadow": true
+      },
+      "transform": {
+        "position": [0, 0.88, -0.54]
+      },
+      "components": {
+        "SchrodingerRigMarker": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "box-lid",
+      "name": "Schrodinger Box Lid",
+      "metadata": {
+        "iwsdk.validation": {
+          "allowFloating": true
+        }
+      },
+      "content": {
+        "type": "asset",
+        "asset": "box-lid",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0, 1.052, -0.56]
+      },
+      "components": {
+        "BoxLidMarker": {},
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveTowardsTarget"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "gate-h",
+      "name": "Hadamard Gate H",
+      "content": {
+        "type": "asset",
+        "asset": "gate-h",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.22, 0.88, -0.4]
+      },
+      "components": {
+        "GateCubeMarker": {
+          "gate": "H"
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveTowardsTarget"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "gate-x",
+      "name": "Pauli X Gate",
+      "content": {
+        "type": "asset",
+        "asset": "gate-x",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0.22, 0.88, -0.4]
+      },
+      "components": {
+        "GateCubeMarker": {
+          "gate": "X"
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveTowardsTarget"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "gate-z",
+      "name": "Phase Z Gate",
+      "content": {
+        "type": "asset",
+        "asset": "gate-z",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0.32, 0.88, -0.4]
+      },
+      "components": {
+        "GateCubeMarker": {
+          "gate": "Z"
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveTowardsTarget"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "room-wave-field",
+      "name": "Roomscale Wave Field",
+      "metadata": {
+        "iwsdk.validation": {
+          "allowFloating": true
+        }
+      },
+      "content": {
+        "type": "asset",
+        "asset": "room-wave-field"
+      },
+      "transform": {
+        "position": [0, 0.06, -0.45]
+      },
+      "components": {
+        "RoomWaveFieldMarker": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "double-slit-rig",
+      "name": "Double Slit Rig",
+      "content": {
+        "type": "asset",
+        "asset": "double-slit-rig",
+        "castShadow": true,
+        "receiveShadow": true
+      },
+      "transform": {
+        "position": [0, 0.88, -0.54]
+      },
+      "components": {
+        "DoubleSlitRigMarker": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "entanglement-rig",
+      "name": "Entanglement Rig",
+      "content": {
+        "type": "asset",
+        "asset": "entanglement-rig",
+        "castShadow": true,
+        "receiveShadow": true
+      },
+      "transform": {
+        "position": [0, 0.88, -0.54]
+      },
+      "components": {
+        "EntanglementRigMarker": {},
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "detector-probe",
+      "name": "Which Path Probe",
+      "content": {
+        "type": "asset",
+        "asset": "detector-probe",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.14, 0.888, -0.4]
+      },
+      "components": {
+        "DetectorProbeMarker": {
+          "isObserving": false
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveAtSource",
+          "translateMin": [-0.46, 0.45, -0.88],
+          "translateMax": [0.46, 1.55, -0.22]
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "slit-shutter",
+      "name": "Slit Shutter",
+      "content": {
+        "type": "asset",
+        "asset": "slit-shutter",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.08, 1.08, -0.56]
+      },
+      "components": {
+        "SlitShutterMarker": {
+          "closed": false
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveAtSource"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "filter-red",
+      "name": "Filter Crystal 650nm",
+      "content": {
+        "type": "asset",
+        "asset": "filter-red",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.35, 0.888, -0.38]
+      },
+      "components": {
+        "FilterCrystalMarker": {
+          "wavelengthNm": 650
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveAtSource"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "filter-green",
+      "name": "Filter Crystal 532nm",
+      "content": {
+        "type": "asset",
+        "asset": "filter-green",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.29, 0.888, -0.38]
+      },
+      "components": {
+        "FilterCrystalMarker": {
+          "wavelengthNm": 532
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveAtSource"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "filter-blue",
+      "name": "Filter Crystal 430nm",
+      "content": {
+        "type": "asset",
+        "asset": "filter-blue",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.23, 0.888, -0.38]
+      },
+      "components": {
+        "FilterCrystalMarker": {
+          "wavelengthNm": 430
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "MoveAtSource"
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "alice-dial",
+      "name": "Alice Polarizer Dial",
+      "content": {
+        "type": "asset",
+        "asset": "alice-dial",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [-0.34, 1.005, -0.56]
+      },
+      "components": {
+        "AnalyzerDialMarker": {
+          "station": "alice"
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "RotateAtSource",
+          "translate": false,
+          "scale": false
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "bob-dial",
+      "name": "Bob Polarizer Dial",
+      "content": {
+        "type": "asset",
+        "asset": "bob-dial",
+        "castShadow": true
+      },
+      "transform": {
+        "position": [0.34, 1.005, -0.56]
+      },
+      "components": {
+        "AnalyzerDialMarker": {
+          "station": "bob"
+        },
+        "RayInteractable": {},
+        "DistanceGrabbable": {
+          "movementMode": "RotateAtSource",
+          "translate": false,
+          "scale": false
+        },
+        "DepthOccludable": {}
+      }
+    },
+    {
+      "id": "guide-arrow",
+      "name": "Onboarding Guide Arrow",
+      "metadata": {
+        "iwsdk.validation": {
+          "allowFloating": true
+        }
+      },
+      "content": {
+        "type": "asset",
+        "asset": "guide-arrow"
+      },
+      "transform": {
+        "position": [-0.24, 1.03, -0.36]
+      },
+      "components": {
+        "GuideArrowMarker": {}
+      }
+    },
+    {
+      "id": "lab-panel",
+      "name": "Quantum Lab Console",
+      "metadata": {
+        "iwsdk.validation": {
+          "allowFloating": true
+        }
+      },
+      "content": {
+        "type": "asset",
+        "asset": "lab-panel"
+      },
+      "transform": {
+        "position": [0, 1.335, -0.78],
+        "scale": 0.084
+      },
+      "components": {
+        "LabPanelMarker": {},
+        "RayInteractable": {},
+        "PokeInteractable": {}
+      }
+    },
+    {
+      "id": "key-light",
+      "name": "Key Light",
+      "transform": {
+        "position": [-1.8, 5.2, 1.4],
+        "rotationDeg": [-68, -16, 0]
+      },
+      "components": {
+        "DirectionalLight": {
+          "color": [0.95, 0.97, 1, 1],
+          "intensity": 2.1,
+          "castShadow": true,
+          "shadowMapSize": "1024",
+          "shadowCameraSize": 3,
+          "shadowCameraNear": 1,
+          "shadowCameraFar": 14,
+          "shadowRadius": 4,
+          "shadowBias": -0.0004,
+          "shadowNormalBias": 0.02
+        }
+      }
+    },
+    {
+      "id": "fill-light",
+      "name": "Fill Light",
+      "components": {
+        "HemisphereLight": {
+          "skyColor": [0.76, 0.86, 1, 1],
+          "groundColor": [0.16, 0.2, 0.3, 1],
+          "intensity": 0.9
+        }
+      }
+    }
+  ]
+}
